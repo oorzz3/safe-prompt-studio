@@ -1,0 +1,3 @@
+import { characterPresets } from '../../data/presets'
+import { useBuilder } from '../../context/BuilderContext'
+export function QuickPresets(){const{applyPreset}=useBuilder();return <section className="preset-section"><div className="section-heading"><div><small>QUICK CHARACTER PROTOTYPES</small><h2>快速角色原型</h2></div><p>先選一個起點，再自由調整每個細節。</p></div><div className="preset-grid">{characterPresets.map((preset,index)=><button key={preset.id} type="button" className="preset-card" onClick={()=>applyPreset(preset)}><span>0{index+1}</span><small>{preset.eyebrow}</small><b>{preset.name}</b><p>{preset.description}</p></button>)}</div></section>}

@@ -1,52 +1,19 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
-import type { BuilderSelections, ModuleKey } from '../types/prompt'
-import { updateSelection, validateSelections } from '../utils/compatibility'
+import { createContext,useContext,useMemo,useState,type ReactNode } from 'react'
+import { defaultState,emptyState } from '../data/presets'
+import type { BuilderSection,BuilderStateV2,CharacterPreset,SliderKey } from '../types/builderV2'
+import { applyCharacterPreset,validateBuilderState } from '../utils/promptBuilderV2'
 
-export const defaultSelections: BuilderSelections = {
-  figure: ['figure-natural', 'upper-natural', 'waist-natural', 'hip-natural', 'strength-subtle', 'realism-high'],
-  outfit: ['outfit-one-piece', 'color-navy', 'outfit-style-elegant'],
-  pose: ['pose-standing', 'yoga-none', 'body-three-quarter', 'head-distance', 'hands-natural', 'legs-standing'],
-  scene: ['scene-beach', 'time-sunset', 'mood-relaxed'],
-  camera: ['camera-full-body', 'camera-eye', 'shot-three-quarter', 'photo-editorial'],
-  lighting: ['light-sunset', 'style-fashion', 'safety-non-explicit'],
-}
+interface BuilderContextValue {state:BuilderStateV2;messages:string[];setChoice:(section:BuilderSection,field:string,value:string)=>void;toggleList:(section:'persona'|'outfit',field:'vibes'|'accessories',value:string)=>void;setSlider:(key:SliderKey,value:number)=>void;applyPreset:(preset:CharacterPreset)=>void;clear:()=>void;reset:()=>void}
+const BuilderContext=createContext<BuilderContextValue|null>(null)
+const safeClone=(state:BuilderStateV2)=>structuredClone(state)
 
-const emptySelections = (): BuilderSelections => ({ figure: [], outfit: [], pose: [], scene: [], camera: [], lighting: ['safety-non-explicit'] })
-
-interface BuilderContextValue {
-  selections: BuilderSelections
-  messages: string[]
-  select: (module: ModuleKey, optionId: string) => void
-  clear: () => void
-  reset: () => void
-}
-
-const BuilderContext = createContext<BuilderContextValue | null>(null)
-
-export function BuilderProvider({ children }: { children: ReactNode }) {
-  const [selections, setSelections] = useState<BuilderSelections>(defaultSelections)
-  const [messages, setMessages] = useState<string[]>([])
-
-  const select = (module: ModuleKey, optionId: string) => {
-    setSelections((current) => {
-      const result = updateSelection(current, module, optionId)
-      setMessages([...result.messages, ...validateSelections(result.selections).messages])
-      return result.selections
-    })
-  }
-
-  const value = useMemo(() => ({
-    selections,
-    messages,
-    select,
-    clear: () => { setSelections(emptySelections()); setMessages([]) },
-    reset: () => { setSelections(defaultSelections); setMessages([]) },
-  }), [messages, selections])
+export function BuilderProvider({children}:{children:ReactNode}){
+  const [state,setState]=useState<BuilderStateV2>(()=>safeClone(defaultState));const [messages,setMessages]=useState<string[]>([])
+  const commit=(next:BuilderStateV2)=>{next.systemLocks={clearlyAdult:true,fictionalCharacter:true,nonExplicit:true,anatomyGuard:true};setMessages(validateBuilderState(next).messages);setState(next)}
+  const setChoice=(section:BuilderSection,field:string,value:string)=>{const next=safeClone(state);(next[section] as unknown as Record<string,unknown>)[field]=value;commit(next)}
+  const toggleList=(section:'persona'|'outfit',field:'vibes'|'accessories',value:string)=>{const next=safeClone(state);const record=next[section] as unknown as Record<string,unknown>;const current=record[field] as string[];record[field]=current.includes(value)?current.filter(id=>id!==value):[...current,value];commit(next)}
+  const setSlider=(key:SliderKey,value:number)=>{const next=safeClone(state);next.body[key]=Math.max(0,Math.min(100,value));commit(next)}
+  const value=useMemo(()=>({state,messages,setChoice,toggleList,setSlider,applyPreset:(preset:CharacterPreset)=>commit(applyCharacterPreset(preset)),clear:()=>commit(emptyState()),reset:()=>commit(safeClone(defaultState))}),[state,messages])
   return <BuilderContext.Provider value={value}>{children}</BuilderContext.Provider>
 }
-
-export function useBuilder() {
-  const context = useContext(BuilderContext)
-  if (!context) throw new Error('useBuilder must be used inside BuilderProvider')
-  return context
-}
+export function useBuilder(){const value=useContext(BuilderContext);if(!value)throw new Error('useBuilder must be used inside BuilderProvider');return value}

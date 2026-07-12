@@ -59,7 +59,7 @@ const familyDefaults: Record<string, Record<string, string>> = {
   'family-swim': { 'outfit.upper.garment': 'upper-one-piece', 'outfit.lower.garment': '', 'outfit.outerwear': 'outer-none' },
   'family-active': { 'outfit.upper.garment': 'upper-yoga', 'outfit.lower.garment': 'lower-active', 'outfit.outerwear': 'outer-none' },
   'family-resort': { 'outfit.upper.garment': 'upper-resort', 'outfit.lower.garment': '', 'outfit.outerwear': 'outer-none' },
-  'family-office': { 'outfit.upper.garment': 'upper-business-shirt', 'outfit.lower.garment': 'lower-trouser', 'outfit.upper.neckline': 'neck-standard', 'outfit.upper.opening': 'open-one', 'outfit.upper.structure': 'structure-tailored', 'outfit.waist.construction': 'waist-subtle', 'outfit.material.primary': 'mat-poplin', 'outfit.outerwear': 'outer-none' },
+  'family-office': { 'outfit.upper.garment': 'upper-business-shirt', 'outfit.lower.garment': 'lower-trouser', 'outfit.upper.neckline': 'neck-standard', 'outfit.upper.opening': 'open-one', 'outfit.upper.structure': 'structure-tailored', 'outfit.upper.volumePresentation': 'volume-natural', 'outfit.upper.bustTailoring': 'bust-none', 'outfit.waist.construction': 'waist-subtle', 'outfit.material.primary': 'mat-poplin', 'outfit.outerwear': 'outer-none' },
 }
 
 export const applySelection = (state: BuilderStateV3, field: string, value: string) => {

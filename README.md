@@ -1,6 +1,17 @@
-# Safe Prompt Studio v0.2.0-alpha.3
+# Safe Prompt Studio v0.2.0-alpha.3.1
 
 **主題依賴 × 智慧相容引擎版**
+
+## Alpha.3.1 上身體積與 Full-bust 剪裁
+
+- 新增五種上身體積呈現方式，以及胸省、公主線、胸下支撐、前片立體容量與 Full-bust 專屬版型。
+- `bustFullness` 81–90 與 91–100 改用不同的三維體積及胸腰落差語意；60／100 對照不再只差一般程度形容詞。
+- 曲線聚焦真正接管主要特徵排序，Impact Source 分別控制身形、服裝剪裁或鏡位光線的表達策略。
+- 姿勢、手部、景別與視角只產生非阻擋式呈現建議，不會修改使用者身形、姿勢或鏡位設定。
+- Prompt 建構階段合併重複的 `structured`、`tailored` 與 `shaped` 描述；`fully opaque`、`secure coverage` 各保留一次。
+- 高上圍值透過服裝版型、三維體積與胸腰落差呈現，不透過裸露、衣物破裂或鈕扣繃開表達。
+
+平台最終生成結果仍不由本工具保證。
 
 ## Alpha.3 都會職場與結構剪裁
 
@@ -34,7 +45,7 @@
 
 ## 本版重點
 
-- Builder State V3：`schemaVersion: 3`、`dataVersion: "0.2.1"`。
+- Builder State V4：`schemaVersion: 5`、`dataVersion: "0.2.3"`。
 - 姿態改為 `pose.mode + pose.poseId`，不再同時保存一般姿態與瑜珈姿態。
 - 身體方向與拍攝方向合併為唯一 `camera.subjectView`。
 - 具體姿勢由動作包提供 implied values、欄位鎖定、可用視角與鏡位。

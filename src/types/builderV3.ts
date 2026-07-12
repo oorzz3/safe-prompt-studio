@@ -1,11 +1,35 @@
-export type SliderKey='bustFullness'|'waistDefinition'|'hipWidth'|'gluteRoundness'|'gluteProjection'|'thighFullness'|'legProportion'|'visualImpact'
-export interface BuilderStateV4{schemaVersion:4;dataVersion:'0.2.2';persona:{regionStyle:string;ageBand:string;archetype:string;vibes:string[]};face:{faceShape:string;featureVibe:string;hairstyle:string;makeup:string;expression:string};body:{frame:string;bustFullness:number;waistDefinition:number;hipWidth:number;gluteRoundness:number;gluteProjection:number;thighFullness:number;legProportion:number;visualImpact:number};outfit:{family:string;upper:{garment:string;neckline:string;opening:string;structure:string;fit:string};waist:{construction:string};lower:{garment:string;silhouette:string};outerwear:string;material:{primary:string;surface:string;opacityLock:true};styling:{color:string;accessories:string[];curveFocus:string;impactSource:string}};pose:{mode:string;poseId:string;headDirection:string;handPosition:string;legPosition:string};scene:{location:string;time:string;atmosphere:string};camera:{framing:string;height:string;subjectView:string;photographyType:string;lensStyle:string};lighting:{lightType:string;visualStyle:string;rimLight:string;colorTone:string};systemLocks:{clearlyAdult:true;fictionalCharacter:true;nonExplicit:true;anatomyGuard:true}}
-export type BuilderStateV3=BuilderStateV4
-export type BuilderSection=keyof Omit<BuilderStateV4,'schemaVersion'|'dataVersion'|'systemLocks'>
-export interface V2Option{id:string;labelZh:string;labelEn:string;prompt:{zh:string;en:string}}
-export interface SliderDefinition{key:SliderKey;labelZh:string;labelEn:string;description:string}
-export interface CharacterPreset{id:string;name:string;eyebrow:string;description:string;state:BuilderStateV4}
-export interface ValidationResult{isValid:boolean;messages:string[]}
-export interface PoseDefinition{id:string;mode:string;labelZh:string;labelEn:string;prompt:{zh:string;en:string};impliedValues:Record<string,string>;lockedFields:string[];allowedValues:Record<string,string[]>;explanation:string}
-export interface FieldLock{field:string;value:string;sourceId:string;reason:string}export interface DisabledOption{optionId:string;field:string;reason:string}export interface CompatibilityChange{field:string;previousValue:unknown;nextValue:unknown;reason:string}
-export interface CompatibilityResolution{nextState:BuilderStateV4;changes:CompatibilityChange[];lockedFields:FieldLock[];disabledOptions:DisabledOption[];messages:string[];requiresConfirmation:boolean}
+export type SliderKey = 'bustFullness' | 'waistDefinition' | 'hipWidth' | 'gluteRoundness' | 'gluteProjection' | 'thighFullness' | 'legProportion' | 'visualImpact'
+
+export interface BuilderStateV4 {
+  schemaVersion: 5
+  dataVersion: '0.2.3'
+  persona: { regionStyle: string; ageBand: string; archetype: string; vibes: string[] }
+  face: { faceShape: string; featureVibe: string; hairstyle: string; makeup: string; expression: string }
+  body: { frame: string; bustFullness: number; waistDefinition: number; hipWidth: number; gluteRoundness: number; gluteProjection: number; thighFullness: number; legProportion: number; visualImpact: number }
+  outfit: {
+    family: string
+    upper: { garment: string; neckline: string; opening: string; structure: string; fit: string; volumePresentation: string; bustTailoring: string }
+    waist: { construction: string }
+    lower: { garment: string; silhouette: string }
+    outerwear: string
+    material: { primary: string; surface: string; opacityLock: true }
+    styling: { color: string; accessories: string[]; curveFocus: string; impactSource: string }
+  }
+  pose: { mode: string; poseId: string; headDirection: string; handPosition: string; legPosition: string }
+  scene: { location: string; time: string; atmosphere: string }
+  camera: { framing: string; height: string; subjectView: string; photographyType: string; lensStyle: string }
+  lighting: { lightType: string; visualStyle: string; rimLight: string; colorTone: string }
+  systemLocks: { clearlyAdult: true; fictionalCharacter: true; nonExplicit: true; anatomyGuard: true }
+}
+
+export type BuilderStateV3 = BuilderStateV4
+export type BuilderSection = keyof Omit<BuilderStateV4, 'schemaVersion' | 'dataVersion' | 'systemLocks'>
+export interface V2Option { id: string; labelZh: string; labelEn: string; prompt: { zh: string; en: string } }
+export interface SliderDefinition { key: SliderKey; labelZh: string; labelEn: string; description: string }
+export interface CharacterPreset { id: string; name: string; eyebrow: string; description: string; state: BuilderStateV4 }
+export interface ValidationResult { isValid: boolean; messages: string[] }
+export interface PoseDefinition { id: string; mode: string; labelZh: string; labelEn: string; prompt: { zh: string; en: string }; impliedValues: Record<string, string>; lockedFields: string[]; allowedValues: Record<string, string[]>; explanation: string }
+export interface FieldLock { field: string; value: string; sourceId: string; reason: string }
+export interface DisabledOption { optionId: string; field: string; reason: string }
+export interface CompatibilityChange { field: string; previousValue: unknown; nextValue: unknown; reason: string }
+export interface CompatibilityResolution { nextState: BuilderStateV4; changes: CompatibilityChange[]; lockedFields: FieldLock[]; disabledOptions: DisabledOption[]; messages: string[]; requiresConfirmation: boolean }

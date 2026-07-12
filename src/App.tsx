@@ -17,7 +17,10 @@ import {
   getDisabledReason,
   getFieldLock,
 } from "./utils/compatibilityEngine";
-import { getBodyPromptStrategy } from "./utils/promptBuilderV3";
+import {
+  getBodyPromptStrategy,
+  getPresentationGuidance,
+} from "./utils/promptBuilderV3";
 const label = (id: string) =>
   (findOption(id) ?? findCompositionOption(id) ?? findOfficeOption(id))
     ?.labelZh ??
@@ -45,6 +48,7 @@ export default function App() {
     cancel,
   } = useBuilder();
   const bodyStrategy = getBodyPromptStrategy(state),
+    presentationGuidance = getPresentationGuidance(state),
     office = state.outfit.family === "family-office",
     upperOptions = office
       ? oo.upper.filter(
@@ -82,7 +86,7 @@ export default function App() {
           <span className="brand-mark">S</span>
           <span>
             <b>Safe Prompt Studio</b>
-            <small>SMART COMPATIBILITY / 0.2.0-alpha.2</small>
+            <small>UPPER-BODY VOLUME / 0.2.0-alpha.3.1</small>
           </span>
         </a>
         <div className="header-actions">
@@ -209,6 +213,9 @@ export default function App() {
               </div>
               <div className="body-strategy">
                 <b>Prompt 輸出策略</b>
+                <span>
+                  目前曲線焦點：{label(state.outfit.styling.curveFocus)}
+                </span>
                 <span>主要輪廓：{bodyStrategy.features.join("、")}</span>
                 <span>
                   輸出方式：已合併為 {bodyStrategy.groups} 組主要曲線描述
@@ -223,6 +230,17 @@ export default function App() {
                     重複聚焦單一身體部位。
                   </em>
                 )}
+              </div>
+              <div className="presentation-guidance">
+                <div>
+                  <small>PRESENTATION GUIDANCE</small>
+                  <b>造型呈現建議</b>
+                </div>
+                <span>上身體積設定：{state.body.bustFullness >= 81 ? "高" : state.body.bustFullness >= 61 ? "中高" : "自然"}</span>
+                <span>目前姿勢：{label(state.pose.poseId)}／{label(state.camera.framing)}／{label(state.camera.subjectView)}</span>
+                {presentationGuidance.map((guidance) => (
+                  <p key={guidance}>{guidance}</p>
+                ))}
               </div>
             </AccordionModule>
             <AccordionModule
@@ -262,6 +280,22 @@ export default function App() {
                     options={oo.structure}
                     value={state.outfit.upper.structure}
                     onChange={(v) => setChoice("outfit", "upper.structure", v)}
+                  />
+                  <ChoiceField
+                    label="上身體積呈現"
+                    options={oo.volumePresentation}
+                    value={state.outfit.upper.volumePresentation}
+                    onChange={(v) =>
+                      setChoice("outfit", "upper.volumePresentation", v)
+                    }
+                  />
+                  <ChoiceField
+                    label="上身立體結構"
+                    options={oo.bustTailoring}
+                    value={state.outfit.upper.bustTailoring}
+                    onChange={(v) =>
+                      setChoice("outfit", "upper.bustTailoring", v)
+                    }
                   />
                   <ChoiceField
                     label="貼合程度"
@@ -336,6 +370,12 @@ export default function App() {
                   主要剪裁：{label(state.outfit.upper.neckline)}、
                   {label(state.outfit.upper.structure)}
                 </span>
+                {office && (
+                  <span>
+                    上身體積：{label(state.outfit.upper.volumePresentation)}、
+                    {label(state.outfit.upper.bustTailoring)}
+                  </span>
+                )}
                 <span>
                   腰臀呈現：{label(state.outfit.waist.construction)}、
                   {label(state.outfit.lower.garment)}

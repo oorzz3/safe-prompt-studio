@@ -1,7 +1,7 @@
 import { useEffect,useMemo,useRef,useState } from 'react'
 import { useBuilder } from '../../context/BuilderContext'
 import { copyToClipboard } from '../../utils/clipboard'
-import { buildAllPrompts,buildCharacterSummary,buildHighImpactPrompt,buildNaturalPrompt,buildNegativePrompt } from '../../utils/promptBuilderV2'
+import { buildAllPrompts,buildCharacterSummary,buildHighImpactPrompt,buildNaturalPrompt,buildNegativePrompt } from '../../utils/promptBuilderV3'
 
 export function PromptOutput(){
   const{state}=useBuilder();const[toast,setToast]=useState('');const timer=useRef<number|undefined>(undefined)

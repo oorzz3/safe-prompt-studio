@@ -1,19 +1,7 @@
-import { createContext,useContext,useMemo,useState,type ReactNode } from 'react'
-import { defaultState,emptyState } from '../data/presets'
-import type { BuilderSection,BuilderStateV2,CharacterPreset,SliderKey } from '../types/builderV2'
-import { applyCharacterPreset,validateBuilderState } from '../utils/promptBuilderV2'
-
-interface BuilderContextValue {state:BuilderStateV2;messages:string[];setChoice:(section:BuilderSection,field:string,value:string)=>void;toggleList:(section:'persona'|'outfit',field:'vibes'|'accessories',value:string)=>void;setSlider:(key:SliderKey,value:number)=>void;applyPreset:(preset:CharacterPreset)=>void;clear:()=>void;reset:()=>void}
-const BuilderContext=createContext<BuilderContextValue|null>(null)
-const safeClone=(state:BuilderStateV2)=>structuredClone(state)
-
-export function BuilderProvider({children}:{children:ReactNode}){
-  const [state,setState]=useState<BuilderStateV2>(()=>safeClone(defaultState));const [messages,setMessages]=useState<string[]>([])
-  const commit=(next:BuilderStateV2)=>{next.systemLocks={clearlyAdult:true,fictionalCharacter:true,nonExplicit:true,anatomyGuard:true};setMessages(validateBuilderState(next).messages);setState(next)}
-  const setChoice=(section:BuilderSection,field:string,value:string)=>{const next=safeClone(state);(next[section] as unknown as Record<string,unknown>)[field]=value;commit(next)}
-  const toggleList=(section:'persona'|'outfit',field:'vibes'|'accessories',value:string)=>{const next=safeClone(state);const record=next[section] as unknown as Record<string,unknown>;const current=record[field] as string[];record[field]=current.includes(value)?current.filter(id=>id!==value):[...current,value];commit(next)}
-  const setSlider=(key:SliderKey,value:number)=>{const next=safeClone(state);next.body[key]=Math.max(0,Math.min(100,value));commit(next)}
-  const value=useMemo(()=>({state,messages,setChoice,toggleList,setSlider,applyPreset:(preset:CharacterPreset)=>commit(applyCharacterPreset(preset)),clear:()=>commit(emptyState()),reset:()=>commit(safeClone(defaultState))}),[state,messages])
-  return <BuilderContext.Provider value={value}>{children}</BuilderContext.Provider>
-}
-export function useBuilder(){const value=useContext(BuilderContext);if(!value)throw new Error('useBuilder must be used inside BuilderProvider');return value}
+import{createContext,useContext,useMemo,useState,type ReactNode}from'react';import{defaultState,emptyState}from'../data/presets';import type{BuilderSection,BuilderStateV3,CharacterPreset,CompatibilityResolution,SliderKey}from'../types/builderV3';import{applySelection,resolveDependencies}from'../utils/compatibilityEngine'
+interface Value{state:BuilderStateV3;resolution:CompatibilityResolution;notice:string;pending:CompatibilityResolution|null;setChoice:(s:BuilderSection,f:string,v:string)=>void;toggleList:(s:'persona'|'outfit',f:'vibes'|'accessories',v:string)=>void;setSlider:(k:SliderKey,v:number)=>void;applyPreset:(p:CharacterPreset)=>void;confirm:()=>void;cancel:()=>void;clear:()=>void;reset:()=>void}
+const C=createContext<Value|null>(null);const normalize=(s:BuilderStateV3)=>resolveDependencies(s)
+export function BuilderProvider({children}:{children:ReactNode}){const initial=normalize(structuredClone(defaultState));const[state,setState]=useState(initial.nextState),[resolution,setResolution]=useState(initial),[notice,setNotice]=useState(''),[pending,setPending]=useState<CompatibilityResolution|null>(null)
+const commit=(r:CompatibilityResolution)=>{setState(r.nextState);setResolution(r);setNotice(r.messages.at(-1)??'');setPending(null)};const select=(s:BuilderSection,f:string,v:string)=>{const r=applySelection(state,`${s}.${f}`,v);r.requiresConfirmation?setPending(r):commit(r)}
+const value=useMemo(()=>({state,resolution,notice,pending,setChoice:select,toggleList:(s:'persona'|'outfit',f:'vibes'|'accessories',v:string)=>{const n=structuredClone(state),a=(n[s]as any)[f]as string[];(n[s]as any)[f]=a.includes(v)?a.filter(x=>x!==v):[...a,v];commit(normalize(n))},setSlider:(k:SliderKey,v:number)=>{const n=structuredClone(state);n.body[k]=v;commit(normalize(n))},applyPreset:(p:CharacterPreset)=>commit(normalize(structuredClone(p.state))),confirm:()=>pending&&commit(pending),cancel:()=>setPending(null),clear:()=>commit(normalize(emptyState())),reset:()=>commit(normalize(structuredClone(defaultState)))}),[state,resolution,notice,pending]);return<C.Provider value={value}>{children}</C.Provider>}
+export function useBuilder(){const v=useContext(C);if(!v)throw Error('BuilderProvider required');return v}

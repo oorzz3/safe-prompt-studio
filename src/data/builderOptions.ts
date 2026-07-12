@@ -1,4 +1,4 @@
-import type { V2Option } from '../types/builderV2'
+import type { V2Option } from '../types/builderV3'
 
 const o = (id: string, labelZh: string, labelEn: string, zh: string, en: string): V2Option => ({ id, labelZh, labelEn, prompt: { zh, en } })
 

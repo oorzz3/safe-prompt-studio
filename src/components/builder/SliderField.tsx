@@ -1,3 +1,3 @@
-import type { SliderDefinition } from '../../types/builderV2'
-import { getSliderSemantic } from '../../utils/promptBuilderV2'
+import type { SliderDefinition } from '../../types/builderV3'
+import { getSliderSemantic } from '../../utils/promptBuilderV3'
 export function SliderField({definition,value,onChange}:{definition:SliderDefinition;value:number;onChange:(value:number)=>void}){const semantic=getSliderSemantic(definition.key,value);return <div className={`slider-field ${definition.key==='visualImpact'?'is-impact':''}`}><div className="slider-heading"><label htmlFor={`slider-${definition.key}`}><b>{definition.labelZh}</b><small>{definition.labelEn}</small></label><output htmlFor={`slider-${definition.key}`}>{value}</output></div><input id={`slider-${definition.key}`} type="range" min="0" max="100" step="1" value={value} onInput={event=>onChange(Number(event.currentTarget.value))}/><div className="slider-semantic"><b>{semantic.en} / {semantic.zh}</b><span>{semantic.description}</span></div></div>}

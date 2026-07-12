@@ -1,56 +1,27 @@
-# Safe Prompt Studio v0.2.0-alpha.1
+# Safe Prompt Studio v0.2.0-alpha.2
 
-**虛構成年女性角色 × 寫真構圖 Prompt Builder**
+**主題依賴 × 智慧相容引擎版**
 
-Safe Prompt Studio 是一套從零建立明確成年、完全虛構且非露骨的女性角色與攝影構圖提示詞工作台。使用者可組合角色氣質、臉部髮妝、身形曲線、服裝、姿態、場景與鏡位，並同步取得自然寫真版及高衝擊 Editorial Prompt。
+虛構成年女性角色與寫真構圖 Prompt Builder。公開網站：<https://oorzz3.github.io/safe-prompt-studio/>
 
-公開網站：[https://oorzz3.github.io/safe-prompt-studio/](https://oorzz3.github.io/safe-prompt-studio/)
+## 本版重點
 
-## 產品定位與安全範圍
+- Builder State V3：`schemaVersion: 3`、`dataVersion: "0.2.1"`。
+- 姿態改為 `pose.mode + pose.poseId`，不再同時保存一般姿態與瑜珈姿態。
+- 身體方向與拍攝方向合併為唯一 `camera.subjectView`。
+- 具體姿勢由動作包提供 implied values、欄位鎖定、可用視角與鏡位。
+- compatibilityEngine 集中處理依賴、鎖定、Disabled 原因、變更預覽與驗證。
+- 小型修正直接套用並顯示 Notice；三項以上變更使用確認 Dialog。
+- Prompt Builder V3 只讀取解析後狀態，分開建立姿勢、支撐結構與主體視角片段。
+- 明確成年、完全虛構、非露骨、解剖保護永遠固定啟用。
 
-- 僅建立原創、明確成年、虛構且非露骨的女性角色。
-- 不進行真人身分保留、真人臉孔修改、名人相似生成或真人素材情色化。
-- 不提供未成年人、年齡不明、裸露、露骨、偷拍、脅迫或非自願內容。
-- Clearly Adult、Fictional Character、Non-Explicit、Anatomy Guard 為不可關閉的固定安全鎖。
-- Negative Prompt 是生成輔助，不保證其他平台一定接受生成內容。
+## 動作模式與姿勢包
 
-## v0.2.0-alpha.1 骨架功能
+支援一般站姿、一般坐姿、動態、伸展、瑜珈與自訂模式。骨架姿勢包含自然站姿、側身站立、轉身回望、自然坐姿、自然行走、側向伸展、戰士式、下犬式、貓牛式、坐姿前屈與溫和橋式。
 
-- 八大 Accordion 模組：角色原型、臉部髮妝、身形曲線、服裝、姿態、場景、鏡位及光線。
-- 地區文化風格、明確成年年齡帶、角色原型與複選氣質。
-- 臉型、五官氣質、髮型、妝容及表情。
-- 基礎體態與八支 0–100 語意滑桿。
-- `visualImpact` 視覺衝擊控制器，只影響輪廓、姿態張力、構圖、光線與 Editorial 語氣。
-- 三個快速角色原型，套用後仍可逐項修改。
-- 角色摘要、Natural Portrait Prompt、High-Impact Editorial Prompt 與 Negative Prompt。
-- 四區獨立複製與全部複製。
-- 桌面 Sticky Output、獨立捲動及手機單欄 RWD。
+下犬式、貓牛式與橋式會鎖定完成動作必要的手腳結構；不相容的視角、景別與鏡頭高度仍會顯示，但不可操作並附原因。切換離開姿勢時會解除舊鎖定，不保留失效支撐值。
 
-## Builder State V2
-
-新版狀態使用 `schemaVersion: 2`，分為：
-
-```text
-persona → regionStyle / ageBand / archetype / vibes
-face → faceShape / featureVibe / hairstyle / makeup / expression
-body → frame / 7 個部位滑桿 / visualImpact
-outfit → type / color / style / fit / accessories
-pose → basePose / yogaPose / bodyDirection / headDirection / handPosition / legPosition
-scene → location / time / atmosphere
-camera → framing / height / direction / photographyType / lensStyle
-lighting → lightType / visualStyle / rimLight / colorTone
-systemLocks → clearlyAdult / fictionalCharacter / nonExplicit / anatomyGuard
-```
-
-資料版本為 `dataVersion: "0.2.0"` 的角色骨架方向；目前沒有啟用 LocalStorage。未來若遇到舊 `schemaVersion: 1` 配方，將安全忽略或恢復新版預設，不進行複雜遷移。
-
-## 身形滑桿
-
-身形數值不會直接輸出到 Prompt。`mapSliderToPromptFragment()` 會依 0–20、21–40、41–60、61–80、81–100 五段，把每個部位轉成專屬、解剖合理的英文片段。即使使用極端值，固定結尾仍保留 `anatomically coherent proportions` 與 `realistic anatomy`。
-
-## 開發與部署
-
-需求：Node.js 22 及 npm。
+## 開發
 
 ```bash
 npm install
@@ -59,22 +30,15 @@ npm run build
 npm run preview
 ```
 
-Vite GitHub Pages base 固定為 `/safe-prompt-studio/`。Push 到 `main` 後，`.github/workflows/deploy.yml` 會執行 `npm ci`、建置並發布 `dist`。
+GitHub Pages base 維持 `/safe-prompt-studio/`，`main` push 後由既有 GitHub Actions 發布。
 
 ## 已知限制
 
-- 詞庫仍是證明新版資料流的骨架版，尚未補滿所有排列組合。
-- 尚未完成可由使用者管理的角色預設。
-- 尚未提供收藏、LocalStorage、JSON 匯入／匯出或舊配方遷移。
-- 不提供真人素材修圖模式。
-- 不保證 Prompt 一定被其他生成平台接受。
-- 剪貼簿需在 HTTPS 或瀏覽器允許的安全環境使用。
+- 相容引擎目前集中於姿勢、手腳結構、主體視角與鏡位。
+- 服裝與姿勢、場景與光線的完整條件依賴尚未建立。
+- 尚未提供收藏、LocalStorage 或資料匯出。
+- 不提供真人素材修改，也不保證其他圖像平台接受輸出。
 
-## 下一階段 Roadmap
+## 下一階段
 
-- 完整角色原型與臉部髮妝詞庫。
-- 更細緻的身形滑桿語意。
-- 角色預設管理與收藏配方。
-- JSON 匯入／匯出及 schema 驗證。
-- Prompt 平台適配模式。
-- 更多瑜珈動作與攝影構圖預設。
+v0.2.0-alpha.3：都會職場 × 結構剪裁 × 曲線塑形，包括職場服裝家族、領口與開度、上身結構、腰線、下身輪廓及服裝與姿勢相容規則。

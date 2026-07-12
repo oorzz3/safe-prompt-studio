@@ -1,4 +1,4 @@
-import type { SliderDefinition } from '../types/builderV2'
+import type { SliderDefinition } from '../types/builderV3'
 
 export const sliderDefinitions: SliderDefinition[] = [
   { key:'bustFullness',labelZh:'上圍豐滿度',labelEn:'Bust fullness',description:'調整上半身輪廓，始終維持衣著與合理比例。' },

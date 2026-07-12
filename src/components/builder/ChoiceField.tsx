@@ -1,5 +1,5 @@
-import type { V2Option } from '../../types/builderV2'
-export function ChoiceField({label,options,value,onChange,multiple=false}:{label:string;options:readonly V2Option[];value:string|string[];onChange:(id:string)=>void;multiple?:boolean}){
+import type { V2Option } from '../../types/builderV3'
+export function ChoiceField({label,options,value,onChange,multiple=false,disabledReasons={},lock}:{label:string;options:readonly V2Option[];value:string|string[];onChange:(id:string)=>void;multiple?:boolean;disabledReasons?:Record<string,string|undefined>;lock?:{source:string;reason:string}}){
   const values=Array.isArray(value)?value:[value]
-  return <fieldset className="choice-field"><legend><span>{label}</span><small>{multiple?'可複選':'單選'}</small></legend><div className="choice-grid">{options.map(option=>{const active=values.includes(option.id);return <button key={option.id} type="button" aria-pressed={active} className={`choice-chip ${active?'is-active':''}`} onClick={()=>onChange(option.id)}><span>{option.labelZh}</span><small>{option.labelEn}</small></button>})}</div></fieldset>
+  return <fieldset className="choice-field"><legend><span>{lock?'🔒 ':''}{label}</span><small>{lock?`由「${lock.source}」鎖定`:multiple?'可複選':'單選'}</small></legend>{lock&&<p className="lock-reason">{lock.reason}</p>}<div className="choice-grid">{options.map(option=>{const active=values.includes(option.id),reason=disabledReasons[option.id],disabled=Boolean(reason||lock);return <button key={option.id} type="button" disabled={disabled} title={reason} aria-description={reason} aria-pressed={active} className={`choice-chip ${active?'is-active':''}`} onClick={()=>onChange(option.id)}><span>{option.labelZh}</span><small>{reason||option.labelEn}</small></button>})}</div></fieldset>
 }

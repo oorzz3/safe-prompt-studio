@@ -1,6 +1,18 @@
-# Safe Prompt Studio v0.2.0-alpha.2.1
+# Safe Prompt Studio v0.2.0-alpha.3
 
 **主題依賴 × 智慧相容引擎版**
+
+## Alpha.3 都會職場與結構剪裁
+
+- 新增 Swimwear、Activewear、Resort Wear、Urban Office Editorial 四個服裝家族。
+- 職場服裝可分別設定上身、領口、開放程度、胸腰結構、腰線、下身輪廓、材質及外套。
+- 結構式深 V 是設計完成且具有 secure coverage 的服裝剪裁，不是無限制解開鈕扣。
+- 所有職場材質固定 `opacityLock: true`，Prompt 固定加入 fully opaque 與 secure structured coverage。
+- 曲線聚焦只調整 Prompt 優先順序，不修改身形滑桿；Impact Source 決定衝擊主要來自身形、剪裁或鏡位光線。
+- 地面瑜珈與限制腿部活動的職場裙裝會由相容引擎阻擋並建議切換運動服裝；西裝褲搭配戰士式只提供建議，不全面禁止。
+- 新增台灣都會主管、高衝擊職場 Editorial、知性成熟上班族三個快速預設。
+
+高衝擊來自剪裁、輪廓、構圖與光線；不提供透明、走光、衣物破裂、鈕扣繃開或露骨職場描述。本工具不保證其他平台接受輸出。
 
 ## Alpha.2.1 Prompt 平衡
 

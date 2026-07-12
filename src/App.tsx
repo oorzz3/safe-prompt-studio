@@ -86,7 +86,7 @@ export default function App() {
           <span className="brand-mark">S</span>
           <span>
             <b>Safe Prompt Studio</b>
-            <small>UPPER-BODY VOLUME / 0.2.0-alpha.3.1</small>
+            <small>OUTFIT COLOR CONTROL / 0.2.0-alpha.3.2</small>
           </span>
         </a>
         <div className="header-actions">
@@ -261,6 +261,12 @@ export default function App() {
                 value={state.outfit.upper.garment}
                 onChange={(v) => setChoice("outfit", "upper.garment", v)}
               />
+              <ChoiceField
+                label="服裝顏色"
+                options={oo.colors}
+                value={state.outfit.styling.color}
+                onChange={(v) => setChoice("outfit", "styling.color", v)}
+              />
               {office && (
                 <>
                   <ChoiceField
@@ -366,6 +372,7 @@ export default function App() {
               <div className="outfit-summary">
                 <b>服裝視覺摘要</b>
                 <span>家族：{label(state.outfit.family)}</span>
+                <span>目前顏色：{label(state.outfit.styling.color)}</span>
                 <span>
                   主要剪裁：{label(state.outfit.upper.neckline)}、
                   {label(state.outfit.upper.structure)}

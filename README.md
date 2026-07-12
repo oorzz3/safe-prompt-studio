@@ -1,4 +1,4 @@
-# Safe Prompt Studio v0.2.0-alpha.3.1
+# Safe Prompt Studio v0.2.0-alpha.3.2
 
 **主題依賴 × 智慧相容引擎版**
 

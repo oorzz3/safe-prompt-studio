@@ -13,12 +13,12 @@ const modules = [
 ] as const
 
 export default function App() {
-  const { clear, reset } = useBuilder()
+  const { clear, reset, messages } = useBuilder()
   return (
     <div className="app-shell">
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Safe Prompt Studio 首頁">
-          <span className="brand-mark">S</span><span><b>Safe Prompt</b><small>STUDIO / 0.1</small></span>
+          <span className="brand-mark">S</span><span><b>Safe Prompt</b><small>STUDIO / 0.1.0-alpha.2</small></span>
         </a>
         <div className="header-actions">
           <button className="text-button" type="button" onClick={clear}>清空</button>
@@ -37,6 +37,8 @@ export default function App() {
           <p><b>內容使用範圍</b>　本工具僅用於明確成年、非露骨的寫真提示詞整理。請僅使用本人、虛構人物或已獲合法授權的素材。</p>
         </section>
 
+        {messages.length > 0 && <div className="compatibility-note" role="status"><b>組合已調整</b><span>{messages[messages.length - 1]}</span></div>}
+
         <div className="workspace">
           <div className="builder-column">
             <div className="column-label"><span>BUILD PARAMETERS</span><span>六個模組</span></div>
@@ -49,4 +51,3 @@ export default function App() {
     </div>
   )
 }
-
